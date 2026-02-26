@@ -11,12 +11,7 @@ public class StartApplication {
 
     @GetMapping("/")
     public String home() {
-        return "Spring Boot running on EKS via ArgoCD 🚀";
-    }
-
-    @GetMapping("/health")
-    public String health() {
-        return "OK";
+        return "Spring Boot App Successfully Deployed on EKS using ArgoCD ";
     }
 
     public static void main(String[] args) {
