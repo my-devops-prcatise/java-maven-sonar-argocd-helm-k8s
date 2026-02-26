@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  APP_DIR: java-maven-sonar-argocd-helm-k8s/spring-boot-app
+  APP_DIR: spring-boot-app
   MANIFEST_FILE: java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
   DOCKER_IMAGE: devenops641/springboot-app
 
