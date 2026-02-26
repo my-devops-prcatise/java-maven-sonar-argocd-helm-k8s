@@ -11,12 +11,12 @@ env:
   DOCKER_IMAGE: devenops641/springboot-app
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      #  Checkout
-      - name: Checkout Code
+      #  Checkout Code
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
       #  Setup Java
@@ -25,15 +25,16 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
+          cache: maven
 
       #  Build & Test
-      - name: Build and Test with Maven
+      - name: Build and Package
         run: |
           cd $APP_DIR
           mvn clean package
 
-      #  SonarQube Analysis
-      - name: SonarQube Scan
+      #  SonarQube Scan
+      - name: SonarQube Analysis
         env:
           SONAR_HOST_URL: http://44.211.160.25:9000
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -43,7 +44,7 @@ jobs:
             -Dsonar.login=$SONAR_TOKEN \
             -Dsonar.host.url=$SONAR_HOST_URL
 
-      #  Login to DockerHub
+      #  Docker Login
       - name: Login to DockerHub
         uses: docker/login-action@v3
         with:
@@ -54,23 +55,25 @@ jobs:
       - name: Build Docker Image
         run: |
           cd $APP_DIR
-          docker build -t $DOCKER_IMAGE:${{ github.run_number }} .
+          docker build -t $DOCKER_IMAGE:${{ github.sha }} .
+          docker tag $DOCKER_IMAGE:${{ github.sha }} $DOCKER_IMAGE:latest
 
       #  Push Docker Image
       - name: Push Docker Image
         run: |
-          docker push $DOCKER_IMAGE:${{ github.run_number }}
+          docker push $DOCKER_IMAGE:${{ github.sha }}
+          docker push $DOCKER_IMAGE:latest
 
-      #  Update Deployment YAML
-      - name: Update Deployment File
+      #  Update Kubernetes Deployment File
+      - name: Update Deployment Manifest
         run: |
-          git config --global user.email "abhishek.xyz@gmail.com"
-          git config --global user.name "Abhishek Veeramalla"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
 
-          sed -i "s/replaceImageTag/${{ github.run_number }}/g" $MANIFEST_FILE
+          sed -i "s|image:.*|image: $DOCKER_IMAGE:${{ github.sha }}|g" $MANIFEST_FILE
 
           git add $MANIFEST_FILE
-          git commit -m "Update deployment image to version ${{ github.run_number }}"
+          git commit -m "Update image to ${{ github.sha }}"
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
