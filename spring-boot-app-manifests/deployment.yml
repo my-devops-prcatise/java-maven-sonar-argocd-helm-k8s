@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: spring-boot-app
-        image: devenops641/springboot-app:1f39266ce7e530c4b2efdd27f757afe26da52953
+        image: devenops641/springboot-app:c6066b4313e917db23150100f623f2e19d7f3962
         ports:
         - containerPort: 8080
