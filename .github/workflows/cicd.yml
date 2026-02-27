@@ -70,7 +70,7 @@ jobs:
           docker push $DOCKER_IMAGE:${{ github.sha }}
           docker push $DOCKER_IMAGE:latest
 
-      #  Update Kubernetes Deployment File (GitOps Step)
+      # Update Kubernetes Deployment File (GitOps Step)
       - name: Update Deployment Manifest
         run: |
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
