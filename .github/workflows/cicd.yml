@@ -42,7 +42,7 @@ jobs:
       #  SonarQube Scan
       - name: SonarQube Analysis
         env:
-          SONAR_HOST_URL: http://54.236.123.247:9000
+          SONAR_HOST_URL: http://54.164.82.208:9000
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           cd $APP_DIR
