@@ -5,11 +5,12 @@ metadata:
   namespace: default
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
-    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"   # << IMPORTANT for Fargate
-    service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"  # optional but recommended
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"          # Fargate requires IP targets
+    service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"      # public NLB
+    service.beta.kubernetes.io/aws-load-balancer-healthcheck-protocol: "TCP"    # health check protocol
+    service.beta.kubernetes.io/aws-load-balancer-healthcheck-port: "8080"       # match app port
 spec:
   type: LoadBalancer
-  # On Fargate, you DON'T need NodePorts. Ensure this is false to avoid NodePort allocation.
   allocateLoadBalancerNodePorts: false
   selector:
     app: spring-boot-app
